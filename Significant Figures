@@ -1,0 +1,601 @@
+<!-- 
+  Project: Significant Figures Educational Tool
+  Developer: opensimlab.org
+  Author: AI Assistant
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Significant Figures / เลขนัยสำคัญ</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter & Sarabun for Thai readability -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Sarabun', 'Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: '#f97316', // Orange-500
+                        secondary: '#38bdf8', // Sky-400
+                        slateBg: '#f8fafc', // Slate-50
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #f1f5f9; /* Slate-100 */
+        }
+        .highlight-digit {
+            transition: all 0.3s ease;
+        }
+        .significant {
+            color: #16a34a; /* Green-600 */
+            font-weight: 700;
+        }
+        .non-significant {
+            color: #ef4444; /* Red-500 */
+            opacity: 0.7;
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Language Toggle Styles */
+        html[lang="en"] .th { display: none !important; }
+        html[lang="th"] .en { display: none !important; }
+    </style>
+</head>
+<body class="text-slate-800 font-sans leading-relaxed flex flex-col min-h-screen">
+
+    <header class="bg-white shadow-sm py-6 mb-8 border-b-4 border-primary relative">
+        <div class="max-w-4xl mx-auto px-4 relative">
+            <!-- Language Toggle -->
+            <div class="absolute top-0 right-4 flex bg-slate-100 p-1 rounded-lg border border-slate-200 shadow-sm">
+                <button id="lang-en" class="px-3 py-1 rounded-md text-sm font-semibold transition-all duration-200 bg-white shadow-sm text-primary">EN</button>
+                <button id="lang-th" class="px-3 py-1 rounded-md text-sm font-semibold text-slate-500 hover:text-slate-800 transition-all duration-200">TH</button>
+            </div>
+
+            <div class="text-center mt-6 md:mt-0">
+                <h1 class="text-3xl md:text-4xl font-bold text-slate-900 mb-2">
+                    <span class="en">Significant Figures</span>
+                    <span class="th">เลขนัยสำคัญ</span>
+                </h1>
+                <p class="text-lg text-slate-600">
+                    <span class="en">Learn how to count significant figures easily, step by step.</span>
+                    <span class="th">เรียนรู้วิธีการนับเลขนัยสำคัญอย่างง่ายดาย ทีละขั้นตอน</span>
+                </p>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4 flex-grow w-full">
+        
+        <section class="bg-white rounded-xl shadow-md p-6 md:p-8 mb-10 border-t-4 border-secondary">
+            <h2 class="text-2xl font-bold text-slate-800 mb-6 flex items-center">
+                <svg class="w-6 h-6 mr-2 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                <span class="en">Rules for Significant Figures</span>
+                <span class="th">กฎการนับเลขนัยสำคัญ</span>
+            </h2>
+            
+            <div class="space-y-6 text-lg">
+                <p>
+                    <span class="en">Significant figures are the meaningful digits in a measured or calculated quantity. Here are the basic rules to determine which digits are significant:</span>
+                    <span class="th">เลขนัยสำคัญคือตัวเลขที่มีความหมายและบ่งบอกถึงความแม่นยำในปริมาณที่ได้จากการวัด ต่อไปนี้คือกฎพื้นฐานในการพิจารณาว่าตัวเลขใดเป็นเลขนัยสำคัญ:</span>
+                </p>
+
+                <ul class="list-none space-y-4">
+                    <!-- Rule 1 -->
+                    <li class="flex items-start bg-slateBg p-4 rounded-lg">
+                        <span class="flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-full bg-blue-100 text-blue-700 font-bold mr-4">1</span>
+                        <div>
+                            <strong class="text-slate-900 block mb-1">
+                                <span class="en">Non-zero digits are always significant.</span>
+                                <span class="th">ตัวเลขที่ไม่ใช่ศูนย์ เป็นเลขนัยสำคัญเสมอ</span>
+                            </strong>
+                            <span class="text-slate-600">
+                                <span class="en">Example:</span><span class="th">ตัวอย่าง:</span> 
+                                <span class="font-mono bg-white px-2 py-1 rounded shadow-sm border border-slate-200">24.7</span> 
+                                <span class="en">has 3 significant figures (2, 4, and 7).</span>
+                                <span class="th">มีเลขนัยสำคัญ 3 ตัว (2, 4, และ 7)</span>
+                            </span>
+                        </div>
+                    </li>
+                    
+                    <!-- Rule 2 -->
+                    <li class="flex items-start bg-slateBg p-4 rounded-lg">
+                        <span class="flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-full bg-blue-100 text-blue-700 font-bold mr-4">2</span>
+                        <div>
+                            <strong class="text-slate-900 block mb-1">
+                                <span class="en">Zeros between non-zero digits are always significant.</span>
+                                <span class="th">เลขศูนย์ที่อยู่ระหว่างตัวเลขที่ไม่ใช่ศูนย์ เป็นเลขนัยสำคัญเสมอ</span>
+                            </strong>
+                            <span class="text-slate-600">
+                                <span class="en">Example:</span><span class="th">ตัวอย่าง:</span>  
+                                <span class="font-mono bg-white px-2 py-1 rounded shadow-sm border border-slate-200">5004</span> 
+                                <span class="en">has 4 significant figures (5, 0, 0, and 4).</span>
+                                <span class="th">มีเลขนัยสำคัญ 4 ตัว (5, 0, 0, และ 4)</span>
+                            </span>
+                        </div>
+                    </li>
+                    
+                    <!-- Rule 3 -->
+                    <li class="flex items-start bg-slateBg p-4 rounded-lg">
+                        <span class="flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-full bg-blue-100 text-blue-700 font-bold mr-4">3</span>
+                        <div>
+                            <strong class="text-slate-900 block mb-1">
+                                <span class="en">Leading zeros are never significant.</span>
+                                <span class="th">เลขศูนย์ที่อยู่ข้างหน้า (Leading zeros) ไม่เป็นเลขนัยสำคัญ</span>
+                            </strong>
+                            <span class="text-slate-600">
+                                <span class="en">Example:</span><span class="th">ตัวอย่าง:</span>   
+                                <span class="font-mono bg-white px-2 py-1 rounded shadow-sm border border-slate-200">0.0032</span> 
+                                <span class="en">has only 2 significant figures (3 and 2). Leading zeros just indicate the decimal position.</span>
+                                <span class="th">มีเลขนัยสำคัญเพียง 2 ตัว (3 และ 2) เลขศูนย์ข้างหน้าทำหน้าที่เพียงบอกตำแหน่งทศนิยมเท่านั้น</span>
+                            </span>
+                        </div>
+                    </li>
+
+                    <!-- Rule 4 -->
+                    <li class="flex items-start bg-slateBg p-4 rounded-lg">
+                        <span class="flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-full bg-blue-100 text-blue-700 font-bold mr-4">4</span>
+                        <div class="w-full">
+                            <strong class="text-slate-900 block mb-1">
+                                <span class="en">Trailing zeros are significant ONLY if there is a decimal point.</span>
+                                <span class="th">เลขศูนย์ที่อยู่ต่อท้าย (Trailing zeros) จะเป็นเลขนัยสำคัญก็ต่อเมื่อ "มีจุดทศนิยม" กำกับอยู่</span>
+                            </strong>
+                            <span class="text-slate-600 block mt-1">
+                                <span class="en">Example:</span><span class="th">ตัวอย่าง:</span>  
+                                <span class="font-mono bg-white px-2 py-1 rounded shadow-sm border border-slate-200">43.00</span> 
+                                <span class="en">has 4 significant figures.</span>
+                                <span class="th">มีเลขนัยสำคัญ 4 ตัว</span>
+                            </span>
+                            <span class="text-slate-600 block mt-1">
+                                <span class="en">Example:</span><span class="th">ตัวอย่าง:</span>  
+                                <span class="font-mono bg-white px-2 py-1 rounded shadow-sm border border-slate-200">400</span> 
+                                <span class="en">has 1 significant figure (unless written with a decimal point like 400.).</span>
+                                <span class="th">มีเลขนัยสำคัญ 1 ตัว (ยกเว้นว่าจะเขียนมีจุดทศนิยมกำกับ เช่น 400.)</span>
+                            </span>
+                            
+                            <div class="mt-3 bg-blue-50 border-l-4 border-blue-400 p-3 rounded-r-lg w-full">
+                                <strong class="text-blue-800 text-sm block mb-1">
+                                    <span class="en">💡 Tip: Scientific Notation</span>
+                                    <span class="th">💡 ข้อแนะนำ: สัญกรณ์วิทยาศาสตร์ (Scientific Notation)</span>
+                                </strong>
+                                <span class="text-slate-700 text-sm block">
+                                    <span class="en">To avoid confusion with trailing zeros, it is common to write numbers in <strong>scientific notation</strong>. The digits in the base number tell you exactly how many significant figures there are.</span>
+                                    <span class="th">เพื่อหลีกเลี่ยงความกำกวมของเลขศูนย์ต่อท้าย นิยมเขียนตัวเลขในรูป <strong>สัญกรณ์วิทยาศาสตร์</strong> ตัวเลขในฐานจะบอกจำนวนเลขนัยสำคัญอย่างชัดเจน</span>
+                                </span>
+                                <span class="text-slate-700 text-sm block mt-1">
+                                    <span class="en">For example: writing <span class="font-mono bg-white px-1 py-0.5 rounded border border-slate-200 text-xs">400</span> as <span class="font-mono bg-white px-1 py-0.5 rounded border border-slate-200 text-xs">4.00 × 10²</span> clearly shows it has <strong>3</strong> significant figures.</span>
+                                    <span class="th">ตัวอย่างเช่น: การเขียน <span class="font-mono bg-white px-1 py-0.5 rounded border border-slate-200 text-xs">400</span> ในรูป <span class="font-mono bg-white px-1 py-0.5 rounded border border-slate-200 text-xs">4.00 × 10²</span> จะแสดงให้เห็นชัดเจนว่ามีเลขนัยสำคัญ <strong>3</strong> ตัว</span>
+                                </span>
+                            </div>
+                        </div>
+                    </li>
+
+                    <!-- Rule 5 -->
+                    <li class="flex items-start bg-slateBg p-4 rounded-lg">
+                        <span class="flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-full bg-blue-100 text-blue-700 font-bold mr-4">5</span>
+                        <div class="w-full">
+                            <strong class="text-slate-900 block mb-1">
+                                <span class="en">Exact numbers and constants have infinite significant figures.</span>
+                                <span class="th">ตัวเลขแม่นตรงและค่าคงที่ มีเลขนัยสำคัญเป็นอนันต์ (Infinite)</span>
+                            </strong>
+                            <span class="text-slate-600 block">
+                                <span class="en">Values that are exactly known, such as counting numbers (e.g., exactly 3 apples), conversion factors (e.g., 1 min = 60 s), or mathematical constants (e.g., <strong>&pi;</strong>, <strong>&radic;2</strong>, <strong>&radic;3</strong>), are considered to have an unlimited number of significant figures.</span>
+                                <span class="th">ค่าที่ทราบแน่ชัดแน่นอน เช่น การนับจำนวน (เช่น มีแอปเปิ้ล 3 ผลพอดี), ปัจจัยการแปลงหน่วย (เช่น 1 นาที = 60 วินาที), หรือค่าคงที่ทางคณิตศาสตร์ (เช่น <strong>&pi;</strong>, <strong>&radic;2</strong>, <strong>&radic;3</strong>) จะถือว่ามีจำนวนเลขนัยสำคัญไม่จำกัด</span>
+                            </span>
+                            <span class="text-slate-600 block mt-1">
+                                <span class="en">Example: When using the formula for the circumference of a circle (<span class="font-mono bg-white px-1 py-0.5 rounded shadow-sm border border-slate-200 text-sm">C = 2&pi;r</span>), the number "2" and the constant "&pi;" are exact. They <strong>never limit</strong> the number of significant figures in your final answer. Only your measured radius (r) matters.</span>
+                                <span class="th">ตัวอย่าง: เมื่อใช้สูตรหาความยาวเส้นรอบวงกลม (<span class="font-mono bg-white px-1 py-0.5 rounded shadow-sm border border-slate-200 text-sm">C = 2&pi;r</span>) เลข "2" และค่าคงที่ "&pi;" เป็นตัวเลขแม่นตรง พวกมันจะ <strong>ไม่มีผลต่อการจำกัด</strong> เลขนัยสำคัญในคำตอบสุดท้ายของคุณ เฉพาะค่ารัศมี (r) ที่ได้จากการวัดเท่านั้นที่จะถูกนำมาคิด</span>
+                            </span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="bg-white rounded-xl shadow-md overflow-hidden border-2 border-slate-200">
+            <div class="bg-slate-50 border-b border-slate-200 p-6 flex flex-col md:flex-row justify-between items-center gap-4">
+                <h2 class="text-2xl font-bold text-slate-800 flex items-center">
+                    <svg class="w-6 h-6 mr-2 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+                    <span class="en">Examples</span>
+                    <span class="th">ตัวอย่าง</span>
+                </h2>
+                
+                <div class="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
+                    <button id="generateBtn" class="bg-primary hover:bg-orange-600 text-white font-semibold py-2 px-6 rounded-lg shadow-md transition-colors duration-200 flex items-center justify-center text-lg w-full sm:w-auto">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                        <span class="en">Random Number</span>
+                        <span class="th">สุ่มตัวเลข</span>
+                    </button>
+                    <!-- Input option for user to test specific numbers -->
+                    <div class="relative flex items-center border border-slate-300 rounded-lg overflow-hidden bg-white focus-within:ring-2 focus-within:ring-secondary focus-within:border-transparent w-full sm:w-auto">
+                        <input type="text" id="userInputNumber" placeholder="Or type a number here..." class="py-2 px-4 w-full sm:w-56 text-lg outline-none text-slate-700 font-mono">
+                        <button id="checkUserNumBtn" class="bg-slate-200 hover:bg-slate-300 text-slate-700 px-4 py-2 font-semibold transition-colors h-full text-lg border-l border-slate-300 whitespace-nowrap">
+                            <span class="en">Check</span>
+                            <span class="th">ตรวจสอบ</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-6 md:p-8 min-h-[300px] flex flex-col items-center justify-center relative">
+                
+                <!-- Initial State Message -->
+                <div id="initialState" class="text-center text-slate-400">
+                    <svg class="w-16 h-16 mx-auto mb-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <p class="text-xl">
+                        <span class="en">Click "Random Number" or type a number to start learning.</span>
+                        <span class="th">คลิก "สุ่มตัวเลข" หรือพิมพ์ตัวเลขเพื่อเริ่มเรียนรู้</span>
+                    </p>
+                </div>
+
+                <!-- Results Container (Hidden initially) -->
+                <div id="resultsContainer" class="w-full hidden flex-col items-center w-full">
+                    
+                    <!-- The Number Display -->
+                    <div class="mb-8 text-center w-full">
+                        <h3 class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-2">
+                            <span class="en">Analyzing Number</span>
+                            <span class="th">กำลังวิเคราะห์ตัวเลข</span>
+                        </h3>
+                        <div id="numberDisplay" class="text-5xl md:text-7xl font-mono font-bold tracking-widest text-slate-800 bg-slateBg py-6 px-8 rounded-xl border border-slate-200 shadow-inner overflow-x-auto whitespace-nowrap text-center max-w-full">
+                            <!-- Number will be injected here with spans for each digit -->
+                        </div>
+                    </div>
+
+                    <!-- Step-by-Step Explanation -->
+                    <div class="w-full max-w-2xl bg-white border border-slate-200 rounded-xl shadow-sm p-6 mb-6">
+                        <h3 class="text-xl font-bold text-slate-800 mb-4 border-b pb-2">
+                            <span class="en">Step-by-Step Analysis</span>
+                            <span class="th">การวิเคราะห์ทีละขั้นตอน</span>
+                        </h3>
+                        <ul id="explanationList" class="space-y-3 text-lg text-slate-700 list-disc list-inside">
+                            <!-- Explanations injected here via JS -->
+                        </ul>
+                    </div>
+
+                    <!-- Final Summary Box -->
+                    <div class="w-full max-w-2xl bg-green-50 border-2 border-green-200 rounded-xl p-6 text-center shadow-sm">
+                        <h3 class="text-lg font-medium text-green-800 mb-1">
+                            <span class="en">Summary</span>
+                            <span class="th">สรุปผลลัพธ์</span>
+                        </h3>
+                        <p class="text-2xl md:text-3xl font-bold text-green-700 flex items-center justify-center flex-wrap">
+                            <span class="en mr-2">Total Significant Figures: </span>
+                            <span class="th mr-2">จำนวนเลขนัยสำคัญทั้งหมด: </span>
+                            <span id="finalCount" class="text-4xl bg-white px-4 py-1 rounded shadow-sm border border-green-300 ml-2">0</span>
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-slate-800 text-slate-300 py-6 mt-auto">
+        <div class="max-w-4xl mx-auto px-4 text-center">
+            <p class="text-base">
+                Developed by <a href="https://opensimlab.org" target="_blank" rel="noopener noreferrer" class="text-secondary hover:text-white transition-colors underline decoration-secondary decoration-2 underline-offset-2">opensimlab.org</a> | Code generated by AI Assistant
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const generateBtn = document.getElementById('generateBtn');
+            const checkUserNumBtn = document.getElementById('checkUserNumBtn');
+            const userInputNumber = document.getElementById('userInputNumber');
+            const initialState = document.getElementById('initialState');
+            const resultsContainer = document.getElementById('resultsContainer');
+            const numberDisplay = document.getElementById('numberDisplay');
+            const explanationList = document.getElementById('explanationList');
+            const finalCount = document.getElementById('finalCount');
+            
+            // Language Elements
+            const btnEn = document.getElementById('lang-en');
+            const btnTh = document.getElementById('lang-th');
+            const htmlTag = document.documentElement;
+
+            let currentNumberString = ""; // Store last analyzed number for language switching
+
+            // --- Dictionary for Dynamic JavaScript Text ---
+            const i18n = {
+                en: {
+                    placeholder: "Or type a number here...",
+                    error: "Please enter a valid number.",
+                    rule_0: "<li>This number contains only zeros. Technically, a single zero might be 1 sig fig if measured, but it's ambiguous. We will count the first zero as 1.</li>",
+                    rule_1: `<li><span class="font-semibold text-slate-800">Rule 1:</span> Found non-zero digits. These are <strong>always significant</strong>.</li>`,
+                    rule_2: `<li><span class="font-semibold text-slate-800">Rule 2:</span> Found zeros between non-zero digits. These zeros are <strong>significant</strong>.</li>`,
+                    rule_3: `<li><span class="font-semibold text-slate-800">Rule 3:</span> Found leading zeros. They act only as placeholders and are <strong>not significant</strong>.</li>`,
+                    rule_4_dec: `<li><span class="font-semibold text-slate-800">Rule 4:</span> Found trailing zeros <em>and</em> a decimal point. These indicate precision and are <strong>significant</strong>.</li>`,
+                    rule_4_nodec: `<li><span class="font-semibold text-slate-800">Rule 4:</span> Found trailing zeros but <em>no</em> decimal point. These are usually placeholders and are <strong>not significant</strong>.</li>`
+                },
+                th: {
+                    placeholder: "หรือพิมพ์ตัวเลขที่นี่...",
+                    error: "กรุณาระบุตัวเลขที่ถูกต้อง (เช่น 12.34)",
+                    rule_0: "<li>ตัวเลขนี้มีแต่เลขศูนย์ โดยหลักการแล้วเลขศูนย์ตัวเดียวอาจนับเป็นเลขนัยสำคัญ 1 ตัวถ้าได้จากการวัด แต่มักมีความกำกวม ในที่นี้จะนับศูนย์ตัวแรกเป็น 1 ตัว</li>",
+                    rule_1: `<li><span class="font-semibold text-slate-800">กฎข้อ 1:</span> พบตัวเลขที่ไม่ใช่ศูนย์ ตัวเลขเหล่านี้เป็น <strong>เลขนัยสำคัญเสมอ</strong></li>`,
+                    rule_2: `<li><span class="font-semibold text-slate-800">กฎข้อ 2:</span> พบเลขศูนย์อยู่ระหว่างตัวเลขที่ไม่ใช่ศูนย์ เลขศูนย์เหล่านี้ <strong>เป็นเลขนัยสำคัญ</strong></li>`,
+                    rule_3: `<li><span class="font-semibold text-slate-800">กฎข้อ 3:</span> พบเลขศูนย์อยู่ด้านหน้า ทำหน้าที่บอกตำแหน่งทศนิยมเท่านั้น และ <strong>ไม่เป็นเลขนัยสำคัญ</strong></li>`,
+                    rule_4_dec: `<li><span class="font-semibold text-slate-800">กฎข้อ 4:</span> พบเลขศูนย์ต่อท้าย <em>และ</em> มีจุดทศนิยม บ่งบอกถึงความละเอียดในการวัด และ <strong>เป็นเลขนัยสำคัญ</strong></li>`,
+                    rule_4_nodec: `<li><span class="font-semibold text-slate-800">กฎข้อ 4:</span> พบเลขศูนย์ต่อท้าย แต่ <em>ไม่มี</em> จุดทศนิยม มักเป็นเพียงตัวรักษาตำแหน่ง และ <strong>ไม่เป็นเลขนัยสำคัญ</strong></li>`
+                }
+            };
+
+            // --- Language Switching Logic ---
+            function setLanguage(lang) {
+                htmlTag.setAttribute('lang', lang);
+                
+                // Update button styles
+                if (lang === 'en') {
+                    btnEn.classList.add('bg-white', 'shadow-sm', 'text-primary');
+                    btnEn.classList.remove('text-slate-500', 'hover:text-slate-800', 'bg-transparent');
+                    
+                    btnTh.classList.remove('bg-white', 'shadow-sm', 'text-primary');
+                    btnTh.classList.add('text-slate-500', 'hover:text-slate-800', 'bg-transparent');
+                } else {
+                    btnTh.classList.add('bg-white', 'shadow-sm', 'text-primary');
+                    btnTh.classList.remove('text-slate-500', 'hover:text-slate-800', 'bg-transparent');
+                    
+                    btnEn.classList.remove('bg-white', 'shadow-sm', 'text-primary');
+                    btnEn.classList.add('text-slate-500', 'hover:text-slate-800', 'bg-transparent');
+                }
+
+                // Update dynamic input placeholder
+                userInputNumber.placeholder = i18n[lang].placeholder;
+
+                // Re-render analysis if there is a number currently displayed
+                if (currentNumberString !== "" && !resultsContainer.classList.contains('hidden')) {
+                    const analysis = analyzeSigFigs(currentNumberString, lang);
+                    displayResults(analysis, false); // false = don't animate again
+                }
+            }
+
+            btnEn.addEventListener('click', () => setLanguage('en'));
+            btnTh.addEventListener('click', () => setLanguage('th'));
+
+            // --- Number Generation Logic ---
+            function generateRandomNumber() {
+                const types = ['integer', 'decimal_leading_zeros', 'decimal_trailing_zeros', 'scientific_notation_like', 'exact_zeros'];
+                const type = types[Math.floor(Math.random() * types.length)];
+                
+                let numStr = "";
+                
+                switch(type) {
+                    case 'integer':
+                        numStr = Math.floor(Math.random() * 10000).toString();
+                        if (Math.random() > 0.5) numStr += "00"; 
+                        break;
+                    case 'decimal_leading_zeros':
+                        numStr = "0.0" + "0".repeat(Math.floor(Math.random() * 3)) + (Math.floor(Math.random() * 900) + 10).toString();
+                        break;
+                    case 'decimal_trailing_zeros':
+                        numStr = (Math.random() * 100).toFixed(2 + Math.floor(Math.random() * 3));
+                        break;
+                    case 'scientific_notation_like':
+                         numStr = (Math.random() * 10).toFixed(3);
+                         break;
+                    case 'exact_zeros':
+                         numStr = (Math.floor(Math.random() * 90) + 10).toString() + ".0";
+                         break;
+                }
+                
+                if(parseFloat(numStr) === 0 && !numStr.includes('.')) numStr = "0";
+                return numStr;
+            }
+
+            // --- Core Logic: Analyze Significant Figures ---
+            function analyzeSigFigs(numberString, lang = htmlTag.getAttribute('lang')) {
+                let cleanStr = numberString.trim();
+                const dict = i18n[lang];
+                
+                if (!/^-?[0-9]*\.?[0-9]+$/.test(cleanStr) && !/^-?[0-9]+\.?[0-9]*$/.test(cleanStr)) {
+                    return { error: dict.error };
+                }
+
+                let str = cleanStr.replace(/^-/, ''); 
+                let hasDecimal = str.includes('.');
+                let steps = [];
+                let sigFigIndices = new Set();
+                
+                let digitsOnly = str.replace('.', '');
+                let firstNonZeroIdx = -1;
+                let lastNonZeroIdx = -1;
+
+                for (let i = 0; i < digitsOnly.length; i++) {
+                    if (digitsOnly[i] !== '0') {
+                        if (firstNonZeroIdx === -1) firstNonZeroIdx = i;
+                        lastNonZeroIdx = i;
+                    }
+                }
+
+                // Rule implementations using dictionary
+                if (firstNonZeroIdx === -1) {
+                     steps.push(dict.rule_0);
+                     let idx = str.indexOf('0');
+                     if(idx !== -1) sigFigIndices.add(idx);
+                     
+                     return {
+                        original: cleanStr,
+                        processedStr: str,
+                        sigFigIndices: sigFigIndices,
+                        steps: steps,
+                        count: 1
+                    };
+                }
+
+                // Rule 1
+                steps.push(dict.rule_1);
+                
+                // Rule 2
+                let hasMiddleZeros = false;
+                for (let i = firstNonZeroIdx; i <= lastNonZeroIdx; i++) {
+                    if (digitsOnly[i] === '0') {
+                        hasMiddleZeros = true;
+                    }
+                }
+                if (hasMiddleZeros) {
+                    steps.push(dict.rule_2);
+                }
+
+                // Rule 3
+                if (firstNonZeroIdx > 0) {
+                    steps.push(dict.rule_3);
+                }
+
+                // Rule 4
+                let hasTrailingZeros = lastNonZeroIdx < digitsOnly.length - 1;
+                if (hasTrailingZeros) {
+                    if (hasDecimal) {
+                        steps.push(dict.rule_4_dec);
+                    } else {
+                        steps.push(dict.rule_4_nodec);
+                    }
+                }
+
+                let digitCounter = 0;
+                let count = 0;
+                
+                for (let i = 0; i < str.length; i++) {
+                    if (str[i] === '.') continue; 
+
+                    let isSig = false;
+
+                    if (digitCounter >= firstNonZeroIdx && digitCounter <= lastNonZeroIdx) {
+                        isSig = true;
+                    } 
+                    else if (digitCounter > lastNonZeroIdx && hasDecimal) {
+                        isSig = true;
+                    }
+
+                    if (isSig) {
+                        sigFigIndices.add(i);
+                        count++;
+                    }
+                    digitCounter++;
+                }
+
+                return {
+                    original: cleanStr,
+                    processedStr: str, 
+                    hasNegative: cleanStr.startsWith('-'),
+                    sigFigIndices: sigFigIndices,
+                    steps: steps,
+                    count: count
+                };
+            }
+
+            // --- UI Update Logic ---
+            function displayResults(analysis, animate = true) {
+                if (analysis.error) {
+                    alert(analysis.error); 
+                    return;
+                }
+
+                currentNumberString = analysis.original;
+
+                initialState.classList.add('hidden');
+                resultsContainer.classList.remove('hidden');
+                
+                if(animate) {
+                    resultsContainer.classList.remove('fade-in');
+                    void resultsContainer.offsetWidth; // trigger reflow
+                    resultsContainer.classList.add('fade-in');
+                }
+
+                numberDisplay.innerHTML = '';
+                explanationList.innerHTML = '';
+                
+                if(analysis.hasNegative) {
+                     const minusSpan = document.createElement('span');
+                     minusSpan.textContent = '-';
+                     minusSpan.className = 'text-slate-800 mx-[1px]';
+                     numberDisplay.appendChild(minusSpan);
+                }
+
+                for (let i = 0; i < analysis.processedStr.length; i++) {
+                    const char = analysis.processedStr[i];
+                    const span = document.createElement('span');
+                    span.textContent = char;
+                    span.className = 'inline-block mx-[2px] highlight-digit ';
+                    
+                    if (char === '.') {
+                        span.className += 'text-slate-800 font-bold';
+                    } else if (analysis.sigFigIndices.has(i)) {
+                        span.className += 'significant border-b-4 border-green-500 pb-1';
+                    } else {
+                        span.className += 'non-significant';
+                    }
+                    
+                    numberDisplay.appendChild(span);
+                }
+
+                analysis.steps.forEach((stepHTML, index) => {
+                    const li = document.createElement('div');
+                    li.innerHTML = stepHTML;
+                    if(animate) {
+                        li.className = 'fade-in';
+                        li.style.animationDelay = `${index * 0.1}s`;
+                    }
+                    explanationList.appendChild(li);
+                });
+
+                if (animate) {
+                    finalCount.textContent = '...';
+                    setTimeout(() => {
+                        finalCount.textContent = analysis.count;
+                        finalCount.classList.add('scale-110', 'text-green-600', 'transition-transform');
+                        setTimeout(() => finalCount.classList.remove('scale-110'), 200);
+                    }, 300);
+                } else {
+                    finalCount.textContent = analysis.count;
+                }
+            }
+
+            // --- Event Listeners ---
+            generateBtn.addEventListener('click', () => {
+                const numStr = generateRandomNumber();
+                userInputNumber.value = numStr; 
+                const analysis = analyzeSigFigs(numStr);
+                displayResults(analysis);
+            });
+
+            checkUserNumBtn.addEventListener('click', () => {
+                const val = userInputNumber.value;
+                if(val) {
+                    const analysis = analyzeSigFigs(val);
+                    displayResults(analysis);
+                }
+            });
+
+            userInputNumber.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    checkUserNumBtn.click();
+                }
+            });
+            
+            userInputNumber.addEventListener('input', function(e) {
+                this.value = this.value.replace(/[^0-9.-]/g, '');
+            });
+
+            // Set initial language explicitly to ensure correct state load
+            setLanguage('en');
+        });
+    </script>
+</body>
+</html>
